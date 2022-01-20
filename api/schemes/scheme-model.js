@@ -32,7 +32,7 @@ async function findById(scheme_id) { // EXERCISE B
 }
 
 async function findSteps(scheme_id) { // EXERCISE C
-  
+
   const rows = await db('schemes as sc')
       .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
       .select('scheme_name', 'st.step_id as step_id', 'step_number', 'instructions')
@@ -49,9 +49,11 @@ async function findSteps(scheme_id) { // EXERCISE C
 }
 
 function add(scheme) { // EXERCISE D
-  /*
-    1D- This function creates a new scheme and resolves to _the newly created scheme_.
-  */
+  return db('schemes')
+    .insert(scheme)
+    .then(([scheme_id]) => { // eslint-disable-line
+      return findById(scheme_id)
+    })
 }
 
 function addStep(scheme_id, step) { // EXERCISE E
