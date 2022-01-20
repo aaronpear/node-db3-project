@@ -14,7 +14,7 @@ const checkSchemeId = async (req, res, next) => {
     if (scheme) {
       next();
     } else {
-      next({ message: 'Could not find scheme with given id.', status: 404 });
+      next({ message: `scheme with scheme_id ${req.params.scheme_id} not found`, status: 404 });
     }
   } catch (err) {
     next(err);
