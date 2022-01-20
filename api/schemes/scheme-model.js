@@ -11,7 +11,7 @@ async function find() { // EXERCISE A
 }
 
 async function findById(scheme_id) { // EXERCISE B
-  
+
   const rows = await db('schemes as sc')
       .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
       .select('scheme_name', 'sc.scheme_id as scheme_id', 'st.step_id as step_id', 'step_number', 'instructions')
@@ -31,27 +31,21 @@ async function findById(scheme_id) { // EXERCISE B
   return result;
 }
 
-function findSteps(scheme_id) { // EXERCISE C
-  /*
-    1C- Build a query in Knex that returns the following data.
-    The steps should be sorted by step_number, and the array
-    should be empty if there are no steps for the scheme:
+async function findSteps(scheme_id) { // EXERCISE C
+  
+  const rows = await db('schemes as sc')
+      .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+      .select('scheme_name', 'st.step_id as step_id', 'step_number', 'instructions')
+      .orderBy('step_number', 'asc')
+      .where('sc.scheme_id', scheme_id);
 
-      [
-        {
-          "step_id": 5,
-          "step_number": 1,
-          "instructions": "collect all the sheep in Scotland",
-          "scheme_name": "Get Rich Quick"
-        },
-        {
-          "step_id": 4,
-          "step_number": 2,
-          "instructions": "profit",
-          "scheme_name": "Get Rich Quick"
-        }
-      ]
-  */
+  const result = rows.reduce((steps, step) => {
+      if(!step.step_id) return steps;
+      const { step_id, step_number, instructions } = step;
+      return steps.concat({ step_id, step_number, instructions, scheme_name: rows[0].scheme_name });
+  }, [])
+
+  return result;
 }
 
 function add(scheme) { // EXERCISE D
