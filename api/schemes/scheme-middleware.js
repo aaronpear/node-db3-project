@@ -1,13 +1,5 @@
 const db = require('../../data/db-config.js');
 
-/*
-  If `scheme_id` does not exist in the database:
-
-  status 404
-  {
-    "message": "scheme with scheme_id <actual id> not found"
-  }
-*/
 const checkSchemeId = async (req, res, next) => {
   try {
     const scheme = await db('schemes').where('scheme_id', req.params.scheme_id).first();
@@ -30,7 +22,13 @@ const checkSchemeId = async (req, res, next) => {
   }
 */
 const validateScheme = (req, res, next) => {
+  const { scheme_name } = req.body;
 
+  if (!scheme_name || typeof scheme_name !== 'string') {
+    next({ status: 400, message: 'invalid scheme_name' });
+  } else {
+    next();
+  }
 }
 
 /*
